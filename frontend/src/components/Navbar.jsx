@@ -12,7 +12,7 @@ import { useContext, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import api from "../config/ApiUrl";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.jpeg";
 
 const navigation = [
   { name: "Home", href: "/" },

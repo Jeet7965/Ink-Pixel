@@ -23,7 +23,7 @@ const Signup = () => {
 
     setLoading(true);
     try {
-      await api.post("/users/signup", form);
+      await api.post("/users/register", form);
 
       toast.success("Account created successfully!");
       setForm({ name: "", email: "", password: "" });
