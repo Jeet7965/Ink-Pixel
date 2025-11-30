@@ -32,7 +32,7 @@ const navigation = [
       { name: "Add Media", href: "/upload-media" },
     ],
   },
-   { name: "About Us", href: "/aboutus" },
+  { name: "About Us", href: "/aboutus" },
 ];
 
 function classNames(...classes) {
@@ -70,9 +70,14 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex items-center">
             <Link to="/">
-              <img className="h-8 w-auto" src={logo} alt="Logo" />
+              <img
+                className="h-8 w-8 rounded-full border-2 border-white shadow-md object-cover"
+                src={logo}
+                alt="Logo"
+              />
             </Link>
           </div>
+
 
           {/* Desktop Menu */}
           <div className="hidden sm:flex space-x-4 ml-6">
