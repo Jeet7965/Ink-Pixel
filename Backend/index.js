@@ -15,7 +15,7 @@ app.use(express.json());
 
 
 app.use(cors({
-  origin: ["*"],
+  origin: ["http://localhost:5174","https://ink-pixel.onrender.com"],
   credentials: true,
 }));
 
