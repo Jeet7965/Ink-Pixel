@@ -1,5 +1,5 @@
 import express from "express"
-import { registerUser,updateProfile,loginUser,getUserById,updateInfo,PasswordChange} from "../controllers/userController.js";
+import { registerUser,updateProfile,loginUser,getUserById} from "../controllers/userController.js";
 import authMiddleware from "../middleware/AuthMiddleware.js";
 import upload from "../middleware/ImgUpload.js";
 import { adminMiddleware } from "../middleware/adminMiddleware.js";
@@ -11,8 +11,7 @@ router.post("/login", loginUser);
 
 
 router.put("/update-profile/:id", authMiddleware, upload.single("profileImage"), updateProfile);
-router.put("/profile-info/:id", authMiddleware, updateInfo);
-router.put("/change-password/:id", authMiddleware, PasswordChange);
+// router.put("/profile-info/:id", authMiddleware, updateInfo);
 router.get("/get-user/:id",authMiddleware,getUserById);
 router.get("/dashboard", authMiddleware, adminMiddleware, (req, res) => {
   res.json({ message: "Protected Data", user: req.user });

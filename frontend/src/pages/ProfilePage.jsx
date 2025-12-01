@@ -68,10 +68,9 @@ const ProfilePage = () => {
 
     try {
       const id = user._id;
-      const res = await api.put(`/users/profile-info/${id}`, formData, {
+      const res = await api.put(`/users/update-profile/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
 
       toast.success("Profile information updated!");
       setUser(res.data.result);
@@ -81,29 +80,7 @@ const ProfilePage = () => {
     }
   };
 
-
-//   const handlePasswordChange = async () => {
-//   if (newPassword !== confirmPassword)
-//     return toast.error("Passwords do not match");
-
-//   try {
-//     const id = user._id;
-
-//     const res = await api.put(`/users/change-password/${id}`, {
-//       currentPassword,
-//       newPassword,
-//     });
-
-//     toast.success("Password changed!");
-
-//     setCurrentPassword("");
-//     setNewPassword("");
-//     setConfirmPassword("");
-//   } catch (err) {
-//     toast.error(err.response?.data?.error || "Password change failed");
-//   }
-// };
-  // SHOW LOADING SPINNER WHEN DATA IS FETCHING
+  // ⬇️ SHOW LOADING SPINNER WHEN DATA IS FETCHING
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
@@ -216,39 +193,6 @@ const ProfilePage = () => {
                         value={user.phone}
                         onChange={(e) =>
                           setUser({ ...user, phone: e.target.value })
-                        }
-                        className="mt-1 w-full px-4 py-2 rounded-md bg-[#0A1128] text-white border border-gray-600"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-gray-300">Current Password</label>
-                      <input
-                        type="text"
-                        value={user.password}
-                        onChange={(e) =>
-                          setUser({ ...user, password: e.target.value })
-                        }
-                        className="mt-1 w-full px-4 py-2 rounded-md bg-[#0A1128] text-white border border-gray-600"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-gray-300">New Password</label>
-                      <input
-                        type="text"
-                        value={user.phone}
-                        onChange={(e) =>
-                          setUser({ ...user, newpassword: e.target.value })
-                        }
-                        className="mt-1 w-full px-4 py-2 rounded-md bg-[#0A1128] text-white border border-gray-600"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-gray-300">Confirm Password</label>
-                      <input
-                        type="text"
-                        value={user.phone}
-                        onChange={(e) =>
-                          setUser({ ...user, confirmPassword: e.target.value })
                         }
                         className="mt-1 w-full px-4 py-2 rounded-md bg-[#0A1128] text-white border border-gray-600"
                       />
