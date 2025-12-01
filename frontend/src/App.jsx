@@ -1,7 +1,7 @@
 
 import './App.css'
 import { ToastContainer, toast } from "react-toastify";
-import { Route,Routes } from 'react-router';
+import { Route, Routes } from 'react-router';
 import HomePage from './pages/HomePage';
 import CreateBlog from './pages/blogPage/CreateBlog';
 import MyBlogs from './pages/blogPage/MyBlog';
@@ -24,31 +24,30 @@ import AboutUs from './pages/About';
 
 function App() {
 
- 
 
   return (
-<div className="min-h-screen bg-gray-100">
-  <ToastContainer position="top-center" autoClose={3000} />
-        <Routes>
-          <Route path='/login' element={<Login/>}/>
-          <Route path='/signup' element={<Signup />}/>
-          <Route path='/forgot-password' element={<ForgotPassword/>}/>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/aboutus" element={<AboutUs/>} />
-          <Route path="/profile" element={<ProtectedRoute> <ProfilePage /> </ProtectedRoute> } />
-          <Route path="/create-blog" element={<ProtectedRoute> <CreateBlog /> </ProtectedRoute> } />
-          <Route path="/update-blog/:id" element={<ProtectedRoute> <UpdateBlog /> </ProtectedRoute> } />
-          <Route path="/blogs" element={<BlogSection />} />
-          <Route path="/blog/:id" element={<ProtectedRoute><BlogDetails /></ProtectedRoute>} />
-          <Route path="/my-blogs" element={<ProtectedRoute><MyBlogs /></ProtectedRoute>} />
-         
-          <Route path="/upload-media" element={<ProtectedRoute><MediaUpload /></ProtectedRoute>} />
-          <Route path="/media/download/:id" element={<ProtectedRoute><ImageDetails /></ProtectedRoute>} />
-          <Route path="/gallery" element={<ProtectedRoute><GallerySection /></ProtectedRoute>} />
-          <Route path="/my-gallery" element={<ProtectedRoute><MyGallery /></ProtectedRoute>} />
-          <Route path="*" element={<PageNotFound/>} />
-        </Routes>
-     
+    <div className="min-h-screen bg-gray-100">
+      <ToastContainer position="top-center" autoClose={3000} />
+      <Routes>
+        <Route path='/login' element={<Login />} />
+        <Route path='/signup' element={<Signup />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/aboutus" element={<AboutUs />} />
+        <Route path="/profile" element={<ProtectedRoute> <ProfilePage /> </ProtectedRoute>} />
+        <Route path="/create-blog" element={<ProtectedRoute> <CreateBlog /> </ProtectedRoute>} />
+        <Route path="/update-blog/:id" element={<ProtectedRoute> <UpdateBlog /> </ProtectedRoute>} />
+        <Route path="/blogs" element={<BlogSection />} />
+        <Route path="/blog/:id" element={<ProtectedRoute><BlogDetails /></ProtectedRoute>} />
+        <Route path="/my-blogs" element={<ProtectedRoute><MyBlogs /></ProtectedRoute>} />
+
+        <Route path="/upload-media" element={<ProtectedRoute><MediaUpload /></ProtectedRoute>} />
+        <Route path="/media/download/:id" element={<ProtectedRoute><ImageDetails /></ProtectedRoute>} />
+        <Route path="/gallery" element={<ProtectedRoute><GallerySection /></ProtectedRoute>} />
+        <Route path="/my-gallery" element={<ProtectedRoute><MyGallery /></ProtectedRoute>} />
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+
     </div>
   )
 }

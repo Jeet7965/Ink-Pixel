@@ -1,7 +1,10 @@
 import axios from "axios";
+import { useNavigate } from "react-router";
+const navigate = useNavigate();
 
 const api = axios.create({
   baseURL: "https://inkandpixel.onrender.com",
+  withCredentials: true,
 });
 
 api.interceptors.request.use((config) => {
@@ -18,9 +21,8 @@ api.interceptors.response.use(
       // Remove token from localStorage
       // alert("Session expired. Please login again.");
       localStorage.removeItem("token");
-
       // Redirect to login page
-      window.location.href = "/login";
+      navigate("/login"); 
     }
 
     return Promise.reject(error);
