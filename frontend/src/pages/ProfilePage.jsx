@@ -3,18 +3,24 @@ import Navbar from "../components/Navbar";
 import api from "../config/ApiUrl";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { TailSpin } from "react-loader-spinner";
+
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const [profilePic, setProfilePic] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(true); // ✅ FIXED
 
   const fetchUser = async () => {
     try {
       const id = JSON.parse(localStorage.getItem("USER_ID"));
       const res = await api.get(`/users/get-user/${id}`);
+
       setUser(res.data.result);
+      setLoading(false); // ⬅ stop loading
     } catch (err) {
       console.log(err);
+      setLoading(false); // ⬅ stop loading on error too
     }
   };
 
@@ -22,11 +28,10 @@ const ProfilePage = () => {
     fetchUser();
   }, []);
 
-  // Handle file input change
+  // file input change
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setProfilePic(file);
-
     if (file) setPreview(URL.createObjectURL(file));
   };
 
@@ -52,7 +57,7 @@ const ProfilePage = () => {
     }
   };
 
-  // Update personal info (name, phone, bio)
+  // Update personal info
   const handleProfileInfoUpdate = async (e) => {
     e.preventDefault();
 
@@ -63,9 +68,10 @@ const ProfilePage = () => {
 
     try {
       const id = user._id;
-      const res = await api.put(`/users/update-profile/${id}`, formData, {
+      const res = await api.put(`/users/profile-info/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+
 
       toast.success("Profile information updated!");
       setUser(res.data.result);
@@ -75,12 +81,43 @@ const ProfilePage = () => {
     }
   };
 
-  if (!user) return <p className="p-6 text-white">Loading...</p>;
+
+//   const handlePasswordChange = async () => {
+//   if (newPassword !== confirmPassword)
+//     return toast.error("Passwords do not match");
+
+//   try {
+//     const id = user._id;
+
+//     const res = await api.put(`/users/change-password/${id}`, {
+//       currentPassword,
+//       newPassword,
+//     });
+
+//     toast.success("Password changed!");
+
+//     setCurrentPassword("");
+//     setNewPassword("");
+//     setConfirmPassword("");
+//   } catch (err) {
+//     toast.error(err.response?.data?.error || "Password change failed");
+//   }
+// };
+  // SHOW LOADING SPINNER WHEN DATA IS FETCHING
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+        <TailSpin height={80} width={80} color="#4fa94d" />
+        <p className="text-white ml-4 text-xl">Loading profile...</p>
+      </div>
+    );
+  }
 
   return (
     <>
       <Navbar />
-      <ToastContainer></ToastContainer>
+      <ToastContainer />
+
       <div className="min-h-screen bg-[#0A1128] px-4 py-10 flex justify-center">
         <div className="w-full max-w-5xl space-y-10">
           {/* HEADER */}
@@ -94,6 +131,7 @@ const ProfilePage = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
             {/* LEFT SIDEBAR */}
             <div className="lg:col-span-1 space-y-6">
               <div className="bg-[#0F1736] p-6 rounded-xl shadow-xl">
@@ -103,7 +141,11 @@ const ProfilePage = () => {
 
                 <div className="flex flex-col items-center">
                   <img
-                    src={preview || user.profilePic || "https://i.pravatar.cc/150?u=avatar"}
+                    src={
+                      preview ||
+                      user.profilePic ||
+                      "https://i.pravatar.cc/150?u=avatar"
+                    }
                     className="w-28 h-28 rounded-full shadow-lg object-cover"
                     alt="Profile"
                   />
@@ -151,10 +193,19 @@ const ProfilePage = () => {
                     <div>
                       <label className="text-gray-300">Name</label>
                       <input
+                        disabled
                         type="text"
                         value={user.name}
-                        onChange={(e) => setUser({ ...user, name: e.target.value })}
-                        className="mt-1 w-full px-4 py-2 rounded-md bg-[#0A1128] text-white border border-gray-600"
+                        className="mt-1 w-full px-4 py-2 rounded-md bg-[#0A1128] opacity-50 cursor-not-allowed text-white border border-gray-600"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-gray-300">Email</label>
+                      <input
+                        disabled
+                        type="text"
+                        value={user.email}
+                        className="mt-1 w-full px-4 py-2 rounded-md bg-[#0A1128] opacity-50 cursor-not-allowed text-white border border-gray-600"
                       />
                     </div>
 
@@ -163,7 +214,42 @@ const ProfilePage = () => {
                       <input
                         type="text"
                         value={user.phone}
-                        onChange={(e) => setUser({ ...user, phone: e.target.value })}
+                        onChange={(e) =>
+                          setUser({ ...user, phone: e.target.value })
+                        }
+                        className="mt-1 w-full px-4 py-2 rounded-md bg-[#0A1128] text-white border border-gray-600"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-gray-300">Current Password</label>
+                      <input
+                        type="text"
+                        value={user.password}
+                        onChange={(e) =>
+                          setUser({ ...user, password: e.target.value })
+                        }
+                        className="mt-1 w-full px-4 py-2 rounded-md bg-[#0A1128] text-white border border-gray-600"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-gray-300">New Password</label>
+                      <input
+                        type="text"
+                        value={user.phone}
+                        onChange={(e) =>
+                          setUser({ ...user, newpassword: e.target.value })
+                        }
+                        className="mt-1 w-full px-4 py-2 rounded-md bg-[#0A1128] text-white border border-gray-600"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-gray-300">Confirm Password</label>
+                      <input
+                        type="text"
+                        value={user.phone}
+                        onChange={(e) =>
+                          setUser({ ...user, confirmPassword: e.target.value })
+                        }
                         className="mt-1 w-full px-4 py-2 rounded-md bg-[#0A1128] text-white border border-gray-600"
                       />
                     </div>
@@ -173,7 +259,10 @@ const ProfilePage = () => {
                     <label className="text-gray-300">Bio</label>
                     <textarea
                       value={user.bio}
-                      onChange={(e) => setUser({ ...user, bio: e.target.value })}
+
+                      onChange={(e) =>
+                        setUser({ ...user, bio: e.target.value })
+                      }
                       className="mt-1 w-full px-4 py-2 rounded-md bg-[#0A1128] text-white border border-gray-600 h-28 resize-none"
                     ></textarea>
                   </div>
@@ -187,6 +276,7 @@ const ProfilePage = () => {
                 </div>
               </form>
             </div>
+
           </div>
         </div>
       </div>

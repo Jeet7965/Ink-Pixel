@@ -46,7 +46,7 @@ function App() {
           <Route path="/media/download/:id" element={<ProtectedRoute><ImageDetails /></ProtectedRoute>} />
           <Route path="/gallery" element={<ProtectedRoute><GallerySection /></ProtectedRoute>} />
           <Route path="/my-gallery" element={<ProtectedRoute><MyGallery /></ProtectedRoute>} />
-          <Route path="/*" element={<ProtectedRoute><PageNotFound /></ProtectedRoute>} />
+          <Route path="*" element={<PageNotFound/>} />
         </Routes>
      
     </div>

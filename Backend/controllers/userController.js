@@ -145,6 +145,54 @@ export const updateProfile = async (req, res) => {
   }
 };
 
+export const updateInfo = async (req,res)=>{
+   try {
+    const { name, phone, bio } = req.body;
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      req.params.id,
+      { name, phone, bio },
+      { new: true }
+    );
+
+    res.json({
+      message: "Profile Info updated successfully",
+      success: true,
+      result: updatedUser,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Update failed" });
+  }
+}
+
+
+export const PasswordChange = async (req,res)=>{
+   try {
+    const { password, newPassword } = req.body;
+
+    const user = await UserModel.findById(req.params.id).select("+password");
+
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // compare passwords
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: "Incorrect current password" });
+    }
+
+    // hash new password
+    const hash = await bcrypt.hash(newPassword, 10);
+    user.password = hash;
+
+    await user.save();
+
+    res.json({ success: true, message: "Password updated successfully" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Server error" });
+  }
+}
 
 // export const updateProfile = async (req, res) => {
 //   try {
