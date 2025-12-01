@@ -14,7 +14,7 @@ const ImageDetails = () => {
   useEffect(() => {
     const fetchMedia = async () => {
       try {
-        const res = await api.get(`/media/${id}`, { withCredentials: true });
+        const res = await api.get(`/media/${id}`);
         setMedia(res.data);
       } catch (err) {
         console.error(err);

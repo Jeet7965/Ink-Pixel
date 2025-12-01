@@ -60,18 +60,12 @@ const ProfilePage = () => {
   // Update personal info
   const handleProfileInfoUpdate = async (e) => {
     e.preventDefault();
-
-    const formData = new FormData();
-    formData.append("name", user.name);
-    formData.append("phone", user.phone);
-    formData.append("bio", user.bio);
-
     try {
       const id = user._id;
-      const res = await api.put(`/users/update-profile/${id}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const res = await api.put(`/users/profile-info/${id}`, {
+        phone: user.phone,
+        bio: user.bio
       });
-
       toast.success("Profile information updated!");
       setUser(res.data.result);
     } catch (err) {

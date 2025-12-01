@@ -145,26 +145,26 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// export const updateInfo = async (req,res)=>{
-//    try {
-//     const { name, phone, bio } = req.body;
+export const updateInfo = async (req,res)=>{
+   try {
+    const {phone, bio } = req.body;
 
-//     const updatedUser = await UserModel.findByIdAndUpdate(
-//       req.params.id,
-//       { name, phone, bio },
-//       { new: true }
-//     );
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      req.params.id,
+      { phone, bio },
+      { new: true }
+    );
 
-//     res.json({
-//       message: "Profile Info updated successfully",
-//       success: true,
-//       result: updatedUser,
-//     });
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json({ error: "Update failed" });
-//   }
-// }
+    res.json({
+      message: "Profile Info updated successfully",
+      success: true,
+      result: updatedUser,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Update failed" });
+  }
+}
 
 
 // export const PasswordChange = async (req,res)=>{
