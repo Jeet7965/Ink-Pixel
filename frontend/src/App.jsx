@@ -19,7 +19,7 @@ import ProtectedRoute from './routes/protectedRoutes';
 import ImageDetails from './pages/mediaPage/ImageDetails';
 import MyGallery from './pages/mediaPage/MyGallery';
 import AboutUs from './pages/About';
-
+import ResetPassword from './components/ResetPassword';
 
 
 function App() {
@@ -32,6 +32,8 @@ function App() {
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+
         <Route path="/" element={<HomePage />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/profile" element={<ProtectedRoute> <ProfilePage /> </ProtectedRoute>} />

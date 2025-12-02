@@ -41,10 +41,13 @@ const MyGallery = () => {
   return (
     <>
       <Navbar></Navbar>
-      <div className="w-full min-h-screen bg-black text-white p-4">
+      <div className="w-full min-h-screen bg-[#0A1128] text-white px-6 md:px-12 lg:px-20 p-4">
         <ToastContainer position="top-center" autoClose={3000} />
-        <h2 className="text-2xl font-bold mb-4 text-center">My Gallery</h2>
-
+        <div className="text-center mb-8">
+          <h2 className="text-xl md:text-3xl font-extrabold">MY Gallery</h2>
+        
+          <hr className="mt-2" />
+        </div>
         {loading && (
           <div className="flex justify-center mt-12">
             <TailSpin height="70" width="70" color="#ffffff" ariaLabel="loading" />

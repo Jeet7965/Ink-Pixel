@@ -20,7 +20,7 @@ const Login = () => {
 
         setLoading(true);
         try {
-            const res = await api.post("/users/login",form);
+            const res = await api.post("/auth/login",form);
             if (res.status === 200 && res.data.token) {
                 const token = res.data.token;
                 const userId = res.data.user.id;
@@ -39,7 +39,7 @@ const Login = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#0A1128] px-4">
-            <ToastContainer />
+             <ToastContainer position="top-center" autoClose={3000} />
             <div className="max-w-md w-full bg-[#0F1736] p-8 rounded-xl shadow-xl">
                 <h2 className="text-3xl font-bold text-white mb-6 text-center">Login</h2>
                 <form onSubmit={handleLogin} className="flex flex-col gap-4">

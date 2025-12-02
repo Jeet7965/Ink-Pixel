@@ -23,7 +23,7 @@ const Signup = () => {
 
     setLoading(true);
     try {
-      await api.post("/users/register", form);
+      await api.post("/auth/register", form);
 
       toast.success("Account created successfully!");
       setForm({ name: "", email: "", password: "" });
@@ -37,7 +37,7 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0A1128] px-4">
-      <ToastContainer />
+      <ToastContainer position="top-center" autoClose={3000} />
       <div className="max-w-md w-full bg-[#0F1736] p-8 rounded-xl shadow-xl">
         <h2 className="text-3xl font-bold text-white mb-6 text-center">Sign Up</h2>
         <form onSubmit={handleSignup} className="flex flex-col gap-4">
