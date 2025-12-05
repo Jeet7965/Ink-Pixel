@@ -49,10 +49,9 @@ function HomePage() {
         </div>
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl lg:mx-0">
-            <h2 className="text-5xl font-semibold tracking-tight text-white sm:text-7xl">Work with us</h2>
+            <h2 className="text-5xl font-semibold tracking-tight text-white sm:text-6xl"> Create, Share, and Manage Your Content</h2>
             <p className="mt-8 text-lg font-medium text-pretty text-gray-300 sm:text-xl/8">
-              Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet
-              fugiat veniam occaecat fugiat.
+              Ink & Pixel lets you write blogs, upload media, and manage your content effortlessly. Build, edit, and share your creative ideas with the world in one seamless platform.
             </p>
           </div>
           <div className="mx-auto mt-10 max-w-2xl lg:mx-0 lg:max-w-none">
@@ -74,7 +73,7 @@ function HomePage() {
           </div>
         </div>
       </div>
-<Newsletter></Newsletter>
+      <Newsletter></Newsletter>
     </div>
   )
 }

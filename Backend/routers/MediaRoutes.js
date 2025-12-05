@@ -9,9 +9,9 @@ const router = express.Router();
 
 
 //  Upload route
-router.post("/upload",authMiddleware, upload.single("file"), async (req, res) => {
+router.post("/upload", authMiddleware, upload.single("file"), async (req, res) => {
   try {
-      const { category } = req.body;
+    const { category } = req.body;
     if (!req.file || !req.file.path) {
       return res.status(400).json({ message: "No file uploaded" });
     }
@@ -26,7 +26,7 @@ router.post("/upload",authMiddleware, upload.single("file"), async (req, res) =>
       fileUrl: req.file.path, // Cloudinary URL
       fileType: req.file.mimetype,
       uploadedBy: req.user._id, // ✅ store uploader ID
-      category:category 
+      category: category
     });
 
     await newMedia.save();
@@ -49,14 +49,56 @@ router.post("/upload",authMiddleware, upload.single("file"), async (req, res) =>
 });
 
 //  Get all media
-router.get("/show-media",async (req, res) => {
+// router.get("/show-media", async (req, res) => {
+//   try {
+   
+//     const files = await Media.find().populate("uploadedBy", "name profilePic").populate("category", "name").sort({ uploadedAt: -1 });
+//     res.json(files);
+//   } catch (error) {
+//     res.status(500).json({ message: "Failed to fetch media", error: error.message });
+//   }
+// });
+
+router.get("/show-media", async (req, res) => {
   try {
-    const files = await Media.find().populate("uploadedBy", "name profilePic").populate("category", "name").sort({ uploadedAt: -1 });
-    res.json(files);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    // Count only media uploaded by ACTIVE users
+    const totalMedia = await Media.countDocuments();
+
+    // Fetch paginated media and populate user + category
+    const media = await Media.find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ uploadedAt: -1 })
+      .populate({
+        path: "uploadedBy",
+        select: "name profilePic active",
+        match: { active: true }          // Only active users
+      })
+      .populate("category", "name");
+
+    // Remove media from inactive users (where uploadedBy becomes null)
+    const visibleMedia = media.filter(item => item.uploadedBy !== null);
+
+    res.json({
+      status: true,
+      media: visibleMedia,
+      totalMedia,
+      currentPage: page,
+      totalPages: Math.ceil(totalMedia / limit)
+    });
+
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch media", error: error.message });
+    res.status(500).json({
+      message: "Failed to fetch media",
+      error: error.message
+    });
   }
 });
+
 
 
 //  Show own media
@@ -149,7 +191,7 @@ router.get("/download/:id", async (req, res) => {
 router.delete("/delete-media/:id", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;  // FIXED
-    const userId = req.user._id;  
+    const userId = req.user._id;
     const userRole = req.user.role;
 
     const media = await Media.findById(id);

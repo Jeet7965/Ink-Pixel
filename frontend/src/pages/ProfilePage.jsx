@@ -9,7 +9,7 @@ const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const [profilePic, setProfilePic] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [loading, setLoading] = useState(true); // ✅ FIXED
+  const [loading, setLoading] = useState(true); // 
 
   const fetchUser = async () => {
     try {

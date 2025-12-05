@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FiHeart, FiDownload, FiSearch } from "react-icons/fi";
+import { FiHeart, FiSearch } from "react-icons/fi";
 import Navbar from "../../components/Navbar";
 import api from "../../config/ApiUrl";
 import { toast } from "react-toastify";
@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { TailSpin } from "react-loader-spinner";
 import Newsletter from "../../components/NewsSletter";
 import { Link } from "react-router";
+import Pagination from "../../components/Pagination";
 
 const GallerySection = () => {
   const [imageSizes, setImageSizes] = useState({});
@@ -16,6 +17,10 @@ const GallerySection = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedType, setSelectedType] = useState("");
+  const [page, setPage] = useState(1);  
+  const [limit] = useState(10);  
+  const [totalItems, setTotalItems] = useState(0);  
+
 
   const handleImageLoad = (e, index) => {
     const { naturalWidth, naturalHeight } = e.target;
@@ -25,10 +30,11 @@ const GallerySection = () => {
     }));
   };
 
-  const fetchMedia = async () => {
+  const fetchMedia = async (page = 1) => {
     try {
-      const res = await api.get("/media/show-media");
-      setMediaItems(res.data);
+      const res = await api.get("/media/show-media",{ params: { page, limit } });
+      setMediaItems(res.data.media);
+      setTotalItems(res.data.totalMedia)
     } catch (error) {
       toast.error("Failed to fetch media");
     } finally {
@@ -46,9 +52,9 @@ const GallerySection = () => {
   };
 
   useEffect(() => {
-    fetchMedia();
+    fetchMedia(page);
     fetchCategories();
-  }, []);
+  }, [page]);
 
   const filteredMedia = mediaItems.filter((item) => {
     const fileName = item.fileName?.toLowerCase() || "";
@@ -75,7 +81,7 @@ const GallerySection = () => {
     <>
       <Navbar />
       <div className="w-full bg-[#0A1128] min-h-screen px-6 md:px-12 lg:px-20 py-10">
-        
+
         {/* Filters */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-10">
           <select
@@ -196,7 +202,12 @@ const GallerySection = () => {
           <p className="text-gray-500 mt-10">No media found.</p>
         )}
       </div>
-
+      <Pagination
+        totalItems={totalItems}
+        page={page}
+        limit={limit}
+        setPage={setPage}
+      />
       <Newsletter />
     </>
   );

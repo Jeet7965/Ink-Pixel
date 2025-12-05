@@ -5,21 +5,37 @@ import api from "../../config/ApiUrl";
 import Navbar from "../../components/Navbar";
 import { Link } from "react-router";
 import Newsletter from "../../components/NewsSletter";
-import { TailSpin } from "react-loader-spinner";   // <-- ADD THIS
+import { TailSpin } from "react-loader-spinner";
+import Pagination from "../../components/Pagination";
 
 const MyBlogs = () => {
     const [blogs, setBlogs] = useState([]);
-    const [loading, setLoading] = useState(true);   // <-- LOADING STATE
+    const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [limit] = useState(6);
+    const [totalItems, setTotalItems] = useState(0);
+    const [inactiveMessage, setInactiveMessage] = useState("");
 
-    const fetchBlogs = async () => {
+    const fetchBlogs = async (page = 1) => {
         try {
-            const res = await api.get("/blog/show-Own-blog");
-            setBlogs(res.data.result || []);
+            setLoading(true);
+            const res = await api.get("/blog/show-own-blog", { params: { page, limit } });
+
+            if (!res.data.status) {
+                // User is inactive
+                setInactiveMessage(res.data.message || "Your account is inactive");
+                setBlogs([]);
+                setTotalItems(0);
+            } else {
+                setInactiveMessage("");
+                setBlogs(res.data.result || []);
+                setTotalItems(res.data.totalBlogs || 0);
+            }
         } catch (error) {
             toast.error("Error fetching blogs");
             console.error(error);
         } finally {
-            setLoading(false);  // <-- Stop loader
+            setLoading(false);
         }
     };
 
@@ -27,10 +43,10 @@ const MyBlogs = () => {
         if (!window.confirm("Are you sure you want to delete this blog?")) return;
 
         try {
-            setLoading(true);   // <-- show loader during deletion
+            setLoading(true);
             await api.delete(`/blog/delete-blog/${id}`);
             toast.success("Blog deleted successfully");
-            fetchBlogs(); // refresh after delete
+            fetchBlogs(page);
         } catch (error) {
             toast.error("Error deleting blog");
             console.log(error);
@@ -39,8 +55,8 @@ const MyBlogs = () => {
     };
 
     useEffect(() => {
-        fetchBlogs();
-    }, []);
+        fetchBlogs(page);
+    }, [page]);
 
     const limitWords = (text, limit) => {
         const words = text.split(" ");
@@ -57,10 +73,17 @@ const MyBlogs = () => {
             <div className="w-full bg-[#0A1128] py-5 px-6 md:px-12 lg:px-20 text-white">
 
                 {/* Header */}
-                <div className="text-center mb-10 ">
+                <div className="text-center mb-10">
                     <h2 className="text-xl md:text-3xl font-extrabold"> My Blog Stories </h2>
                     <hr className="mt-2" />
                 </div>
+
+                {/* Inactive User Message */}
+                {inactiveMessage && (
+                    <div className="text-center text-red-400 font-semibold mb-5">
+                        {inactiveMessage}
+                    </div>
+                )}
 
                 {/* Loader */}
                 {loading ? (
@@ -129,14 +152,14 @@ const MyBlogs = () => {
                                         to={`/update-blog/${blog._id}`}
                                         className="text-yellow-400 hover:text-yellow-300 text-sm font-semibold"
                                     >
-                                         Edit
+                                        Edit
                                     </Link>
 
                                     <button
                                         onClick={() => handleDelete(blog._id)}
-                                        className="text-red-400  hover:text-red-300 text-sm font-semibold"
+                                        className="text-red-400 hover:text-red-300 text-sm font-semibold"
                                     >
-                                         Delete
+                                        Delete
                                     </button>
                                 </div>
                             </div>
@@ -144,6 +167,16 @@ const MyBlogs = () => {
                     </div>
                 )}
             </div>
+
+            {/* Pagination */}
+            {blogs.length > 0 && (
+                <Pagination
+                    totalItems={totalItems}
+                    page={page}
+                    limit={limit}
+                    setPage={setPage}
+                />
+            )}
 
             <Newsletter />
         </>

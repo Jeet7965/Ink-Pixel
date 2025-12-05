@@ -51,27 +51,75 @@ export const AddBlog = async (req, res) => {
 };
 
 // Get all blogs created by the logged-in user
+// export const showOwnBlog = async (req, res) => {
+//     try {
+
+//         if (!req.user.active) {
+//             return res.json({
+//                 message: "Your account is inactive. Blogs cannot be shown.",
+//                 status: false,
+//                 result: []
+//             });
+//         }
+//         const blogs = await BlogModel.find({ postBy: req.user._id }).populate("postBy", "name ").populate("category", "name").sort({ createdAt: -1 });
+//         res.json({
+//             message: "Blogs fetched successfully",
+//             status: true,
+//             result: blogs
+//         });
+
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// }
+
+
+// Get all blogs usnig pagination created by the logged-in user
 export const showOwnBlog = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
 
+        // Check if user is active
         if (!req.user.active) {
             return res.json({
                 message: "Your account is inactive. Blogs cannot be shown.",
                 status: false,
-                result: []
+                result: [],
+                totalBlogs: 0,
+                totalPages: 0,
+                currentPage: page
             });
         }
-        const blogs = await BlogModel.find({ postBy: req.user._id }).populate("postBy", "name ").populate("category", "name").sort({ createdAt: -1 });
+
+        // Count total blogs for this user
+        const totalBlogs = await BlogModel.countDocuments({ postBy: req.user._id });
+
+        // Fetch paginated blogs
+        const blogs = await BlogModel.find({ postBy: req.user._id })
+            .skip(skip)
+            .limit(limit)
+            .sort({ createdAt: -1 })
+            .populate("postBy", "name")
+            .populate("category", "name");
+
         res.json({
             message: "Blogs fetched successfully",
             status: true,
-            result: blogs
+            result: blogs,
+            totalBlogs,
+            totalPages: Math.ceil(totalBlogs / limit),
+            currentPage: page
         });
 
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-}
+};
+
+
+
 
 export const GetBlogbyID = async (req, res) => {
     try {
@@ -91,38 +139,6 @@ export const GetBlogbyID = async (req, res) => {
     }
 }
 
-
-// export const DeleteBlog = async (req, res) => {
-
-//     try {
-//         const { id } = req.params;
-
-//         const deletedBlog = await BlogModel.findOneAndDelete({_id:id,postBy:req.user._id});
-
-//         if (!deletedBlog) {
-//             return res.status(404).json({
-//                 message: "Blog not found",
-//                 status: false
-//             });
-//         }
-//         res.json({
-//             message: "delete blog succusefully",
-//             status: true,
-//             result: deletedBlog
-//         })
-//     } catch (error) {
-//         console.error("Error registering user:", error);
-//         res.json({
-//             message: "Internal Server Error",
-//             status: false,
-//             error: error.message,
-//         });
-
-//     }
-// }
-
-
-// Get user-specific blogs
 
 
 

@@ -8,7 +8,7 @@ export const getAllUsers = async (req, res) => {
         const users = await UserModel.find().select("-password");
 
         res.json({
-             message: "All users fetched successfully",
+            message: "All users fetched successfully",
             status: true,
             users
         });
@@ -18,24 +18,72 @@ export const getAllUsers = async (req, res) => {
 };
 
 
+// Get all blogs 
+
+// export const getAllBlogs = async (req, res) => {
+//     try {
+//         const blogs = await BlogModel.find()
+//             .populate({
+//                 path: "postBy",
+//                 select: "name  profilePic  active",
+//                 match: { active: true }   //Only active users
+//             }).populate({
+//                 path: "category",
+//                 select: "name" // only fetch category name
+//             });
+
+//         // Filter blogs where postBy is null (inactive users filtered out)
+//         const visibleBlogs = blogs.filter(blog => blog.postBy !== null);
+
+//         res.json({
+//             status: true,
+//             blogs: visibleBlogs
+//         });
+
+//     } catch (err) {
+//         res.status(500).json({ message: err.message });
+//     }
+// };
+
+
+// Get all blogs by pagination 
 export const getAllBlogs = async (req, res) => {
     try {
+       
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+         const totalBlogs = await BlogModel.countDocuments({
+            postBy: { $ne: null }
+        });
+       
         const blogs = await BlogModel.find()
+            .skip(skip)
+            .limit(limit)
             .populate({
                 path: "postBy",
-                select: "name  profilePic  active",
-                match: { active: true }   //Only active users
-            }).populate({
-    path: "category",
-    select: "name" // only fetch category name
-  });
+                select: "name profilePic active",
+                match: { active: true } 
+            })
+            .populate({
+                path: "category",
+                select: "name" 
+            });
 
-        // Filter blogs where postBy is null (inactive users filtered out)
+      
         const visibleBlogs = blogs.filter(blog => blog.postBy !== null);
+
+      
+       
+        const totalPages = Math.ceil(totalBlogs / limit);
 
         res.json({
             status: true,
-            blogs: visibleBlogs
+            blogs: visibleBlogs,
+            currentPage: page,
+            totalPages: totalPages,
+            totalBlogs: totalBlogs
         });
 
     } catch (err) {
@@ -46,63 +94,28 @@ export const getAllBlogs = async (req, res) => {
 
 
 
-// export const getUserById = async (req, res) => {
-//   try {
-//     const userId = req.params.id;
 
-//     // Check if ID is provided
-//     if (!userId) {
-//       return res.status(400).json({
-//         message: "User ID is required",
-//         status: false,
-//       });
-//     }
 
-//     // Find user
-//     const user = await UserModel.findById(userId);
 
-//     if (!user) {
-//       return res.status(404).json({
-//         message: "User not found",
-//         status: false,
-//       });
-//     }
-
-//     // Success response
-//     return res.status(200).json({
-//       message: "User fetched successfully",
-//       status: true,
-//       result: user,
-//     });
-
-//   } catch (error) {
-//     console.error("Get User Error:", error.message);
-//     return res.status(500).json({
-//       message: "Internal server error",
-//       error: error.message,
-//       status: false,
-//     });
-//   }
-// };
 
 export const DeleteUser = async (req, res) => {
     try {
-          if (req.user.role !== "admin") {
+        if (req.user.role !== "admin") {
             return res.status(403).json({
                 message: "Only admin can delete users",
                 status: false
             });
         }
         const user = await UserModel.findByIdAndDelete(req.params.id);
-         if (!user) {
+        if (!user) {
             return res.status(404).json({
                 message: "User not found",
                 status: false
             });
         }
-         
- 
-        await BlogModel.deleteMany({ postBy:req.user._id });
+
+
+        await BlogModel.deleteMany({ postBy: req.user._id });
 
         res.json({
             message: " user and blogs delete successfully",

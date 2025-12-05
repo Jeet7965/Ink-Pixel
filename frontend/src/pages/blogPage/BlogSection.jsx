@@ -6,27 +6,36 @@ import Navbar from "../../components/Navbar";
 import { Link } from "react-router";
 import Newsletter from "../../components/NewsSletter";
 import Pagination from "../../components/Pagination";
-import { TailSpin } from "react-loader-spinner";  
+import { TailSpin } from "react-loader-spinner";
 
 const BlogSection = () => {
     const [blogs, setBlogs] = useState([]);
-    const [loading, setLoading] = useState(true);  
+    const [loading, setLoading] = useState(true);
 
-    const fetchBlogs = async () => {
+    const [page, setPage] = useState(1);  // Current page state
+    const [limit] = useState(6);  // Number of items per page
+    const [totalItems, setTotalItems] = useState(0);  // Total number of blogs
+
+
+    const fetchBlogs = async ( page=1 ) => {
         try {
-            const res = await api.get("/admin/get-all-blogs");
+            const res = await api.get("/admin/get-all-blogs",{params: {
+                    page: page,
+                    limit: limit,
+                }});
             setBlogs(res.data.blogs || []);
+            setTotalItems(res.data.totalBlogs || 0); 
         } catch (error) {
             toast.error("Error fetching blogs");
             console.error(error);
         } finally {
-            setLoading(false);   
+            setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchBlogs();
-    }, []);
+        fetchBlogs(page);
+    }, [page]);
 
     const limitWords = (text, limit) => {
         const words = text.split(" ");
@@ -131,7 +140,12 @@ const BlogSection = () => {
                     </div>
                 )}
             </div>
-
+            <Pagination
+                totalItems={totalItems}
+                page={page}
+                limit={limit}
+                setPage={setPage}
+            />
             <Newsletter />
         </>
     );
