@@ -32,7 +32,7 @@ const GallerySection = () => {
 
   const fetchMedia = async (page = 1) => {
     try {
-      const res = await api.get("/media/show-media",{ params: { page, limit } });
+      const res = await api.get("/media/show-media",{params: { page, limit } });
       setMediaItems(res.data.media);
       setTotalItems(res.data.totalMedia)
     } catch (error) {

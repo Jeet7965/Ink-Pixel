@@ -12,19 +12,21 @@ const BlogSection = () => {
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const [page, setPage] = useState(1);  // Current page state
-    const [limit] = useState(6);  // Number of items per page
-    const [totalItems, setTotalItems] = useState(0);  // Total number of blogs
+    const [page, setPage] = useState(1);
+    const [limit] = useState(6);
+    const [totalItems, setTotalItems] = useState(0);
 
 
-    const fetchBlogs = async ( page=1 ) => {
+    const fetchBlogs = async (page = 1) => {
         try {
-            const res = await api.get("/admin/get-all-blogs",{params: {
+            const res = await api.get("/admin/get-all-blogs", {
+                params: {
                     page: page,
                     limit: limit,
-                }});
+                }
+            });
             setBlogs(res.data.blogs || []);
-            setTotalItems(res.data.totalBlogs || 0); 
+            setTotalItems(res.data.totalBlogs || 0);
         } catch (error) {
             toast.error("Error fetching blogs");
             console.error(error);
