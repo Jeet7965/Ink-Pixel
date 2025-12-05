@@ -17,10 +17,10 @@ const ProfilePage = () => {
       const res = await api.get(`/users/get-user/${id}`);
 
       setUser(res.data.result);
-      setLoading(false); // ⬅ stop loading
+      setLoading(false); 
     } catch (err) {
       console.log(err);
-      setLoading(false); // ⬅ stop loading on error too
+      setLoading(false); 
     }
   };
 
