@@ -13,7 +13,7 @@ function BlogDetails() {
     const [reviewText, setReviewText] = useState("");
     const [rating, setRating] = useState(0);
     const [reviews, setReviews] = useState([]);
-    const [currentUserId, setCurrentUserId] = useState("")
+
     // Fetch blog details
     const fetchBlogById = async () => {
         try {
@@ -27,7 +27,8 @@ function BlogDetails() {
     const fetchReview = async () => {
         try {
             const res = await api.get(`/review/${id}`);
-            setReviews(res.data);
+            setReviews(res.data.reviews);
+          
 
         } catch (error) {
             console.log(error);
@@ -143,7 +144,7 @@ function BlogDetails() {
 
                     {/* Review Section */}
                     <div className="mt-12">
-                          {/* Review Form */}
+                        {/* Review Form */}
                         <div className="mt-8">
                             <h2 className="text-xl font-semibold text-gray-900 mb-4">Leave a Review</h2>
                             <div className="flex items-center mb-4">
@@ -185,44 +186,38 @@ function BlogDetails() {
                             </button>
                         </div>
 
-
-
-
-
-
-
                         <h2 className="text-xl font-bold mb-4 text-gray-900">Reviews</h2>
                         <div className="space-y-4">
                             {/* Review Cards */}
                             {reviews.length > 0 ? (
                                 reviews.map((review, index) => (
                                     <div key={index} className="p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-all">
-                                       <div className=" flex justify-between items-center">
-                                         <div className="flex items-center mb-4">
-                                            {/* User Info */}
-                                            <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white mr-4">
-                                                {review.reviewerId?.name?.[0]}
+                                        <div className=" flex justify-between items-center">
+                                            <div className="flex items-center mb-4">
+                                                {/* User Info */}
+                                                <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white mr-4">
+                                                    {review.reviewerId?.name?.[0]}
+
+                                                </div>
+                                                <div >
+                                                    <h3 className="text-lg font-semibold text-gray-900">{review.reviewerId?.name}</h3>
+                                                    <p className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleDateString()}</p>
+                                                </div>
+
 
                                             </div>
-                                            <div >
-                                                <h3 className="text-lg font-semibold text-gray-900">{review.reviewerId?.name}</h3>
-                                                <p className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleDateString()}</p>
+                                            <div>
+                                                {review.reviewerId._id && (
+                                                    <button
+                                                        onClick={() => handleDelete(review._id)}
+                                                        className="text-red-500 text-l hover:underline"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                )}
                                             </div>
 
-
                                         </div>
-                                        <div>
-                                            {review.reviewerId._id && (
-                                                <button
-                                                    onClick={() => handleDelete(review._id)}
-                                                    className="text-red-500 text-l hover:underline"
-                                                >
-                                                    Delete
-                                                </button>
-                                            )}
-                                        </div>
-
-                                       </div>
                                         <div className="flex mb-2">
                                             {[1, 2, 3, 4, 5].map((star) => (
                                                 <span
@@ -246,7 +241,7 @@ function BlogDetails() {
                             )}
                         </div>
 
-                      
+
                     </div>
 
                 </div>
