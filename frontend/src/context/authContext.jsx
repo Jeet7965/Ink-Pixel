@@ -19,6 +19,7 @@ const getInitialAuth = () => {
 
 export const AuthProvider =({children})=>{
     const [user,setUser] =useState(getInitialAuth)
+    
     const login = (token,userId ) => {
         localStorage.setItem("token", token);
         localStorage.setItem("USER_ID", JSON.stringify(userId ));

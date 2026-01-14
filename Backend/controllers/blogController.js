@@ -51,6 +51,7 @@ export const AddBlog = async (req, res) => {
 };
 
 // Get all blogs created by the logged-in user
+
 // export const showOwnBlog = async (req, res) => {
 //     try {
 
@@ -138,9 +139,6 @@ export const GetBlogbyID = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 }
-
-
-
 
 
 

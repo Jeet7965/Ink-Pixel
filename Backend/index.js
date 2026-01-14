@@ -7,11 +7,13 @@ import mediaRoutes from "./routers/MediaRoutes.js";
 import categoryRoutes from "./routers/categoryRoutes.js"
 import adminRoutes from "./routers/adminRoutes.js"
 import authRoutes from "./routers/authRoutes.js"
+import cookieParser from 'cookie-parser';
 const app = express()
 
 dbConnection()
 
 app.use(express.json());
+app.use(cookieParser());
 
 
 app.use(cors({

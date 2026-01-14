@@ -59,15 +59,29 @@ export const login = async (req, res) => {
             return res.status(400).json({ message: "Incorrect password" });
         }
 
-        const token = jwt.sign(
+        const accessToken = jwt.sign(
             { id: user._id, role: user.role, email: user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: "1h" }
+            process.env.ACCESS_TOKEN_SECRET,
+            { expiresIn: "15m" }
         );
+        const refreshToken = jwt.sign(
+            { id: user._id, role: user.role, email: user.email },
+            process.env.REFRESH_TOKEN_SECRET,
+            { expiresIn: "7d" }
+        );
+        user.refreshToken = refreshToken;
 
-        return res.status(200).json({
+        await user.save();
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: false, // true in production (HTTPS)
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
+        .status(200).json({
             message: "Login successful",
-            token,
+            accessToken,
             user: {
                 id: user._id,
                 name: user.name,
@@ -158,5 +172,49 @@ export const resetPassword = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Server error" });
+    }
+};
+
+
+export const refreshAccessToken = async (req, res) => {
+    try {
+
+        const token = req.cookies.refreshToken;
+
+        if (!token) return res.status(401).json({ message: "No refresh token" });
+
+        const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+        const user = await UserModel.findById(decoded.id);
+
+        if (!user || user.refreshToken !== token)
+            return res.status(403).json({ message: "Forbidden" });
+
+        const payload = { id: user._id, email: user.email };
+        const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+
+        res.json({
+            accessToken,
+            message: "Generated new access token"
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(403).json({ message: "Invalid refresh token" });
+    }
+};
+
+
+export const logout = async (req, res) => {
+    try {
+        const token = req.cookies.refreshToken;
+        if (token) {
+            const user = await UserModel.findOne({ refreshToken: token });
+            if (user) {
+                user.refreshToken = null;
+                await user.save();
+            }
+        }
+        res.clearCookie("refreshToken").json({ message: "Logged out" });
+    } catch (error) {
+
     }
 };
