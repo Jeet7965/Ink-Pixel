@@ -22,5 +22,9 @@ export const ReviewSchema= new mongoose.Schema({
         max: 5
     }
 }, { timestamps: true });
+ReviewSchema.index(
+    { postId: 1, reviewerId: 1 },
+    { unique: true }
+);
 
 export const ReviewModel=mongoose.model("Review",ReviewSchema)
