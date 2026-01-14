@@ -12,6 +12,7 @@ function BlogDetails() {
     const [blog, setBlog] = useState(null);
     const [reviewText, setReviewText] = useState("");
     const [rating, setRating] = useState(0);
+    const [reviews, setReviews] = useState([]);
 
     // Fetch blog details
     const fetchBlogById = async () => {
@@ -23,10 +24,20 @@ function BlogDetails() {
             toast.error("Error fetching blog details!");
         }
     };
+const fetchReview = async()=>{
+    try {
+        const res = await api.get(`/review/${id}`);
+        setReviews(res.data);
+    } catch (error) {
+         console.log(error);
+        toast.error("Error fetching reviews");
+    }
+}
 
     useEffect(() => {
         fetchBlogById();
-    }, []);
+        fetchReview()
+    }, [id]);
 
     if (!blog)
         return (
@@ -102,16 +113,17 @@ function BlogDetails() {
                         <h2 className="text-xl font-bold mb-4 text-gray-900">Reviews</h2>
                         <div className="space-y-4">
                             {/* Review Cards */}
-                            {blog.reviews && blog.reviews.length > 0 ? (
-                                blog.reviews.map((review, index) => (
+                            {reviews.length > 0 ? (
+                                reviews.map((review, index) => (
                                     <div key={index} className="p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-all">
                                         <div className="flex items-center mb-4">
                                             {/* User Info */}
                                             <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white mr-4">
-                                                {review.user.name[0]}
+                                               {review.reviewerId?.name?.[0]}
+
                                             </div>
                                             <div > 
-                                                <h3 className="text-lg font-semibold text-gray-900">{review.user.name}</h3>
+                                                <h3 className="text-lg font-semibold text-gray-900">{review.reviewerId?.name}</h3>
                                                 <p className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleDateString()}</p>
                                             </div>
                                         </div>
@@ -138,7 +150,7 @@ function BlogDetails() {
                                         </div>
 
                                         {/* Review Text */}
-                                        <p className="text-gray-700">{review.comment}</p>
+                                        <p className="text-gray-700">{review.review}</p>
                                     </div>
                                 ))
                             ) : (

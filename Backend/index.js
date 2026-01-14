@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from "cors";
+import cookieParser from 'cookie-parser';
 import userRouter from "./routers/userRoutes.js"
 import blogRouter from "./routers/BlogRoutes.js"
 import dbConnection from './config/db.js'
@@ -7,7 +8,7 @@ import mediaRoutes from "./routers/MediaRoutes.js";
 import categoryRoutes from "./routers/categoryRoutes.js"
 import adminRoutes from "./routers/adminRoutes.js"
 import authRoutes from "./routers/authRoutes.js"
-import cookieParser from 'cookie-parser';
+import ReviewRoutes from './routers/reviewerRoutes.js';
 const app = express()
 
 dbConnection()
@@ -35,6 +36,7 @@ app.use("/blog",blogRouter)
 app.use("/media",mediaRoutes)
 app.use("/category",categoryRoutes)
 app.use("/admin",adminRoutes)
+app.use("/review",ReviewRoutes)
 
 app.listen(Port, () => {
   console.log(` Server is running at http://localhost:${Port}`)

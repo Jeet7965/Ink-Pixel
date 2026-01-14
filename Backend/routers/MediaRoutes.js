@@ -48,16 +48,7 @@ router.post("/upload", authMiddleware, upload.single("file"), async (req, res) =
   }
 });
 
-//  Get all media
-// router.get("/show-media", async (req, res) => {
-//   try {
-   
-//     const files = await Media.find().populate("uploadedBy", "name profilePic").populate("category", "name").sort({ uploadedAt: -1 });
-//     res.json(files);
-//   } catch (error) {
-//     res.status(500).json({ message: "Failed to fetch media", error: error.message });
-//   }
-// });
+
 
 router.get("/show-media", async (req, res) => {
   try {
@@ -168,23 +159,7 @@ router.get("/download/:id", async (req, res) => {
 
 
 
-// router.get("/download/:id", authMiddleware, async (req, res) => {
-//   try {
-//     const media = await Media.findById(req.params.id);
-//     if (!media) return res.status(404).json({ message: "File not found" });
 
-//     const signedUrl = cloudinary.url(media.publicId, {
-//       type: "upload",
-//       transformation: [{ flags: "attachment" }],
-//       sign_url: true,
-//       expires_at: Math.floor(Date.now() / 1000) + 60 // 1-minute expiry
-//     });
-
-//     res.redirect(signedUrl);
-//   } catch (error) {
-//     res.status(500).json({ message: "Download failed", error: error.message });
-//   }
-// });
 
 
 
