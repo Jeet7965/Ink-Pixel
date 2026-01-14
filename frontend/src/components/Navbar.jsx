@@ -46,7 +46,7 @@ export default function Navbar() {
 
   const fetchUser = async () => {
     try {
-      const id = JSON.parse(localStorage.getItem("USER_ID"));
+      const id = JSON.parse(sessionStorage.getItem("USER_ID"));
       if (!id) return;
 
       const response = await api.get(`/users/get-user/${id}`);
