@@ -32,7 +32,7 @@ api.interceptors.response.use(
       try {
         // 🔥 CALL REFRESH API (cookie auto sent)
         const res = await axios.post(
-          "https://inkandpixel.onrender.com/auth/refresh",
+          "https://inkandpixel.onrender.com/auth/refresh-token",
           {},
           { withCredentials: true }
         );

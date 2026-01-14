@@ -21,7 +21,7 @@ const Login = () => {
         setLoading(true);
         try {
             const res = await api.post("/auth/login",form);
-            if (res.status === 200 && res.data.token) {
+            if (res.status === 200 && res.data.accessToken) {
                 const token = res.data.accessToken;
                 const userId = res.data.user.id;
                 login(token, userId);
