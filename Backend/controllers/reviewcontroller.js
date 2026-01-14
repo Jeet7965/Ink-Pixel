@@ -4,9 +4,9 @@ import { ReviewModel } from "../model/reviewModel.js";
 
 export const  ReviewerPost =async(req,res)=>{
     try {
-        const {reviewerId,postId, rating, review} = req.body;
+        const {postId, rating, review} = req.body;
         const newReview = await ReviewModel.create({
-          reviewerId,
+          reviewerId:req.user.id,
           postId,
           rating,
           review
@@ -29,7 +29,7 @@ export const  reviewGet = async (req, res) => {
     const { postId } = req.params;
 
     const reviews = await ReviewModel.find({ postId })
-      .populate("reviewerId", "name") // show user name
+      .populate("reviewerId", "name email") // show user name
       .sort({ createdAt: -1 }); // latest first
 
     res.status(200).json(reviews);

@@ -24,15 +24,15 @@ function BlogDetails() {
             toast.error("Error fetching blog details!");
         }
     };
-const fetchReview = async()=>{
-    try {
-        const res = await api.get(`/review/${id}`);
-        setReviews(res.data);
-    } catch (error) {
-         console.log(error);
-        toast.error("Error fetching reviews");
+    const fetchReview = async () => {
+        try {
+            const res = await api.get(`/review/${id}`);
+            setReviews(res.data);
+        } catch (error) {
+            console.log(error);
+            toast.error("Error fetching reviews");
+        }
     }
-}
 
     useEffect(() => {
         fetchBlogById();
@@ -47,17 +47,32 @@ const fetchReview = async()=>{
         );
 
     // Handle review submission
-    const handleReviewSubmit = () => {
+    const handleReviewSubmit = async () => {
         // You can add the logic to send the review data to the backend
-        console.log("Review submitted:", { reviewText, rating });
-        toast.success("Review submitted!");
-        setReviewText("");
-        setRating(0);
+        if (!reviewText || rating === 0) {
+            toast.error("Please add rating and review");
+            return;
+        }
+        try {
+            await api.post("/review", {
+             
+                postId: id,
+                rating,
+                review: reviewText
+            });
+            toast.success("Review submitted successfully");
+            setReviewText("");
+            setRating(0);
+            fetchReview();
+        } catch (error) {
+            console.log(error);
+            toast.error("Failed to submit review");
+        }
     };
 
     return (
         <>
-        <Navbar></Navbar>
+            <Navbar></Navbar>
             <div className="bg-gray-800 min-h-screen py-10 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-4xl mx-auto bg-white/90 backdrop-blur-md shadow-xl rounded-2xl p-6 md:p-10 border border-gray-100">
 
@@ -82,7 +97,7 @@ const fetchReview = async()=>{
                             {blog.postBy.name}
                         </p>
                         <p className="text-gray-700 text-sm md:text-base">
-                           <span className="font-semibold">Post Date: </span>{new Date(blog.createdAt).toLocaleDateString()}
+                            <span className="font-semibold">Post Date: </span>{new Date(blog.createdAt).toLocaleDateString()}
                         </p>
                     </div>
 
@@ -119,33 +134,26 @@ const fetchReview = async()=>{
                                         <div className="flex items-center mb-4">
                                             {/* User Info */}
                                             <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white mr-4">
-                                               {review.reviewerId?.name?.[0]}
+                                                {review.reviewerId?.name?.[0]}
 
                                             </div>
-                                            <div > 
+                                            <div >
                                                 <h3 className="text-lg font-semibold text-gray-900">{review.reviewerId?.name}</h3>
                                                 <p className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleDateString()}</p>
                                             </div>
                                         </div>
 
-                                        {/* Star Rating */}
                                         <div className="flex mb-2">
                                             {[1, 2, 3, 4, 5].map((star) => (
-                                                <svg
+                                                <span
                                                     key={star}
-                                                    className={`w-5 h-5 ${review.rating >= star ? "text-yellow-400" : "text-gray-300"}`}
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="currentColor"
-                                                    viewBox="0 0 20 20"
-                                                    stroke="currentColor"
-                                                    aria-hidden="true"
+                                                    className={`text-xl ${review.rating >= star
+                                                        ? "text-yellow-400"
+                                                        : "text-gray-300"
+                                                        }`}
                                                 >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M10 15l-3.09 1.636L7.64 12.6 5 9.636l4.49-.364L10 2l1.51 7.272L16 9.636l-2.64 2.964 1.73 4.036L10 15z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
+                                                    ★
+                                                </span>
                                             ))}
                                         </div>
 
