@@ -62,7 +62,7 @@ export const login = async (req, res) => {
         const accessToken = jwt.sign(
             { id: user._id, role: user.role, email: user.email },
             process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: "1m" }
+            { expiresIn: "5m" }
         );
         const refreshToken = jwt.sign(
             { id: user._id, role: user.role, email: user.email },
@@ -75,20 +75,20 @@ export const login = async (req, res) => {
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            secure: true, // true in production (HTTPS)
-            sameSite: "strict",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
-        .status(200).json({
-            message: "Login successful",
-            accessToken,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-            }
-        });
+            .status(200).json({
+                message: "Login successful",
+                accessToken,
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
+                }
+            });
 
     } catch (error) {
         return res.status(500).json({

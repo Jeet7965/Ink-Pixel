@@ -1,7 +1,7 @@
 import { useState,createContext } from "react"
 
 export const AuthContext = createContext();
-
+import api from "../config/ApiUrl";
 
 
 function safeJSONParse(str) {
@@ -12,8 +12,8 @@ function safeJSONParse(str) {
     }
 }
 const getInitialAuth = () => {
-    const savedUser = safeJSONParse(localStorage.getItem("user"));
-    const savedToken = localStorage.getItem("token");
+    const savedUser = safeJSONParse(sessionStorage.getItem("user"));
+    const savedToken = sessionStorage.getItem("token");
     return savedUser && savedToken ? { token: savedToken, user: savedUser } : null;
 };
 
@@ -21,17 +21,25 @@ export const AuthProvider =({children})=>{
     const [user,setUser] =useState(getInitialAuth)
     
     const login = (token,userId ) => {
-        localStorage.setItem("token", token);
-        localStorage.setItem("USER_ID", JSON.stringify(userId ));
+        sessionStorage.setItem("token", token);
+        sessionStorage.setItem("USER_ID", JSON.stringify(userId ));
 
         setUser({ token, userId  });
     };
     
-  const logout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("USER_ID");
-
-        setUser(null);
+  const logout = async() => {
+      try {
+        await api.post("/auth/logout")
+      } catch (error) {
+        console.error("Logout failed:", error);
+      }
+      finally {
+      // clear sessionStorage
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("USER_ID");
+      setUser(null);
+      window.location.href = "/login";
+    }
     };
 
    return (
