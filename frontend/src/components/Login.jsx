@@ -22,7 +22,7 @@ const Login = () => {
         try {
             const res = await api.post("/auth/login",form);
             if (res.status === 200 && res.data.token) {
-                const token = res.data.token;
+                const token = res.data.accessToken;
                 const userId = res.data.user.id;
                 login(token, userId);
                 toast.success("Login successful!");

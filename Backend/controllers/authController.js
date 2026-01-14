@@ -62,7 +62,7 @@ export const login = async (req, res) => {
         const accessToken = jwt.sign(
             { id: user._id, role: user.role, email: user.email },
             process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: "15m" }
+            { expiresIn: "1m" }
         );
         const refreshToken = jwt.sign(
             { id: user._id, role: user.role, email: user.email },
@@ -75,7 +75,7 @@ export const login = async (req, res) => {
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            secure: false, // true in production (HTTPS)
+            secure: true, // true in production (HTTPS)
             sameSite: "strict",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
