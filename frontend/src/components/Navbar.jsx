@@ -40,16 +40,13 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
-  const { logout } = useContext(AuthContext);
+  const { logout} = useContext(AuthContext);
   const location = useLocation();
   const [user, setUser] = useState(null);
 
   const fetchUser = async () => {
     try {
-      const id = JSON.parse(sessionStorage.getItem("USER_ID"));
-      if (!id) return;
-
-      const response = await api.get(`/users/get-user/${id}`);
+      const response = await api.get(`/users/me`);
       setUser(response.data.result);
     } catch (error) {
       console.error("Navbar user error:", error);
@@ -59,8 +56,9 @@ export default function Navbar() {
   useEffect(() => {
     fetchUser();
   }, []);
+ 
 
-  const isLoggedIn = !!user; // ADDED
+  const isLoggedIn = !!user; // 🔵 ADDED
 
   return (
     <Disclosure as="nav" className="bg-gray-900 relative z-50">

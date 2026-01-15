@@ -13,9 +13,7 @@ const ProfilePage = () => {
 
   const fetchUser = async () => {
     try {
-      const id = JSON.parse(sessionStorage.getItem("USER_ID"));
-      const res = await api.get(`/users/get-user/${id}`);
-
+      const res = await api.get(`/users/me`);
       setUser(res.data.result);
       setLoading(false); 
     } catch (err) {

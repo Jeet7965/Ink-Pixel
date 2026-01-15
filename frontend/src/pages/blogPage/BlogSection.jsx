@@ -11,7 +11,6 @@ import { TailSpin } from "react-loader-spinner";
 const BlogSection = () => {
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
-
     const [page, setPage] = useState(1);
     const [limit] = useState(6);
     const [totalItems, setTotalItems] = useState(0);

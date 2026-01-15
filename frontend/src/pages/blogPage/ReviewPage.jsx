@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import api from '../../config/ApiUrl'
 import { useState, useEffect } from 'react';
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { AuthContext } from '../../context/authContext.jsx';
 
 function Review({blogId}) {
-    
+    const {user}=useContext(AuthContext)
     const [reviewText, setReviewText] = useState("");
     const [rating, setRating] = useState(0);
     const [reviews, setReviews] = useState([]);
@@ -132,10 +133,10 @@ function Review({blogId}) {
 
                                     </div>
                                     <div>
-                                        {review.reviewerId._id && (
+                                        {user &&  review.reviewerId._id  === user.userId &&  (
                                             <button
                                                 onClick={() => handleDelete(review._id)}
-                                                className="text-red-500 text-l hover:underline"
+                                                className="text-red-500 text-l  p-5 hover:underline"
                                             >
                                                 Delete
                                             </button>
