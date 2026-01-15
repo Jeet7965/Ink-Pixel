@@ -88,6 +88,23 @@ export const updateInfo = async (req,res)=>{
 }
 
 
+export const getCurrentUser = async (req, res) => {
+  try {
+    // user already exists from middleware
+    return res.status(200).json({
+      message: "Current user fetched successfully",
+      status: true,
+      result: req.user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error",
+      status: false,
+    });
+  }
+};
+
+
 // export const PasswordChange = async (req,res)=>{
 //    try {
 //     const { password, newPassword } = req.body;

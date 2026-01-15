@@ -7,7 +7,7 @@ const api = axios.create({
   withCredentials: true,
 });
 
-// 🔹 Request interceptor (access token)
+//  Request interceptor (access token)
 api.interceptors.request.use((config) => {
   const token = sessionStorage.getItem("token");
   if (token) {
@@ -16,7 +16,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// 🔹 Response interceptor (AUTO REFRESH)
+//  Response interceptor (AUTO REFRESH)
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -30,7 +30,7 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        // 🔥 CALL REFRESH API (cookie auto sent)
+        //  CALL REFRESH API (cookie auto sent)
         const res = await axios.post(
           "https://inkandpixel.onrender.com/auth/refresh-token",
           {},

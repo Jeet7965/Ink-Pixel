@@ -40,7 +40,7 @@ export const reviewGet = async (req, res) => {
         const { postId } = req.params;
 
         const reviews = await ReviewModel.find({ postId })
-            .populate("reviewerId", "name email") // show user name
+            .populate("reviewerId", "name email  profilePic ") // show user name
             .sort({ createdAt: -1 }); // latest first
 
         res.status(200).json({

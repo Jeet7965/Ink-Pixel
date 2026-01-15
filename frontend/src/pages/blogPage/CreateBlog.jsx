@@ -177,7 +177,7 @@ function CreateBlog() {
                             type="file"
                             accept="image/*,video/*"
                             onChange={handleFileChange}
-                            className="mt-1"
+                            className="mt-1 ml-5"
                         />
 
                         {preview && (

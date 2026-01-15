@@ -60,7 +60,7 @@ export default function Navbar() {
     fetchUser();
   }, []);
 
-  const isLoggedIn = !!user; // 🔵 ADDED
+  const isLoggedIn = !!user; // ADDED
 
   return (
     <Disclosure as="nav" className="bg-gray-900 relative z-50">
