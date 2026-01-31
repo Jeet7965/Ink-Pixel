@@ -117,4 +117,34 @@ Cloudinary media uploads
 
 Secure backend design
 ## 📂 Project Structure
+Ink-Pixel-main/
+│
+├── Backend/
+│   ├── config/
+│   │   ├── cloudinary.js
+│   │   └── db.js
+│   │
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── admincontroller.js
+│   │   ├── blogController.js
+│   │   ├── reviewcontroller.js
+│   │   └── userController.js
+│   │
+│   ├── middleware/
+│   │   ├── AuthMiddleware.js
+│   │   ├── adminMiddleware.js
+│   │   └── ImgUpload.js
+│   │
+│   ├── model/
+│   │   ├── userModel.js
+│   │   ├── blogModel.js
+│   │   ├── categoryModel.js
+│   │   ├── reviewModel.js
+│   │   └── mediaModel.js
+│   │
+│   ├── index.js
+│   └── package.json
+│
+└── .gitignore
 
